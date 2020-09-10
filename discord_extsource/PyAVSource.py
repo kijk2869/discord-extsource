@@ -148,7 +148,7 @@ class Loader(threading.Thread):
 
                 _seek_locked = False
                 if self.Source._seeking.locked():
-                    self.Loader._seeking.acquire()
+                    self.Source._seeking.acquire()
                     _seek_locked = True
 
                 Frame = next(self.Source.FrameGenerator, None)

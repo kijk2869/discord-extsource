@@ -24,8 +24,12 @@ class YTDLSource(PyAVSource):
 
         return cls(Data, *args, **kwargs)
 
-    def seek(self, *args, **kwargs) -> None:
-        if not self.is_live:
+    def seek(self, offset: float, *args, **kwargs) -> None:
+        if self.is_live:
             raise NotSeekable
 
-        return super().seek(*args, **kwargs)
+        offset = min(
+            offset, (self.duration if self.duration else self.Data["duration"]) - 1
+        )
+
+        return super().seek(offset, *args, **kwargs)
