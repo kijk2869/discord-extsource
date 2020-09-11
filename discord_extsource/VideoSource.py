@@ -51,18 +51,24 @@ class VideoSource(PyAVSource):
     def read(self) -> bytes:
         Data = super().read()
 
-        try:
-            if not self.ScreenShots.empty() and (
-                not self.send_task or self.send_task.done()
-            ):
-                if self.ScreenShots.queue[0][0] <= self.position:
-                    position, Image = self.ScreenShots.get_nowait()
+        if not self.ScreenShots.empty() and (
+            not self.send_task or self.send_task.done()
+        ):
+            if self.ScreenShots.queue[0][0] <= self.position:
+                FilteredScreenShots = [
+                    ScreenShot
+                    for ScreenShot in self.ScreenShots.queue
+                    if ScreenShot[0] <= self.position
+                ]
 
-                    File = discord.File(Image, filename="video.png")
+                position, Image = FilteredScreenShots[-1]
 
-                    self.send_task = self.loop.create_task(self.__send(file=File))
-        except:
-            traceback.print_exc()
+                File = discord.File(Image, filename="video.png")
+
+                self.send_task = self.loop.create_task(self.__send(file=File))
+
+                for ScreenShot in FilteredScreenShots:
+                    self.ScreenShots.queue.remove(ScreenShot)
 
         return Data
 
@@ -93,12 +99,14 @@ class Loader(threading.Thread):
 
     def __do_run(self) -> None:
         if not self.Source.VideoContainer:
-            self.Source.VideoContainer = av.open(self.Source.Source)
+            self.Source.VideoContainer = av.open(
+                self.Source.Source, options=self.Source.AVOption
+            )
 
         self.Source.selectVideoStream = self.Source.VideoContainer.streams.video[0]
         self.Source.selectVideoStream.codec_context.skip_frame = "NONKEY"
         self.Source.VideoFrameGenerator = self.Source.VideoContainer.decode(
-            self.Source.selectVideoStream, options=self.Source.AVOption
+            self.Source.selectVideoStream
         )
 
         prev_position = None
