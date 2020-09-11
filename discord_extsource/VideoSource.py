@@ -98,7 +98,7 @@ class Loader(threading.Thread):
         self.Source.selectVideoStream = self.Source.VideoContainer.streams.video[0]
         self.Source.selectVideoStream.codec_context.skip_frame = "NONKEY"
         self.Source.VideoFrameGenerator = self.Source.VideoContainer.decode(
-            self.Source.selectVideoStream
+            self.Source.selectVideoStream, options=self.Source.AVOption
         )
 
         prev_position = None
