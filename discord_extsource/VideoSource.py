@@ -68,7 +68,7 @@ class VideoSource(PyAVSource):
                 self.send_task = self.loop.create_task(self.__send(file=File))
 
                 for ScreenShot in FilteredScreenShots:
-                    self.ScreenShots.queue.remove(ScreenShot)
+                    self.ScreenShots.get_nowait()
 
         return Data
 
