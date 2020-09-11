@@ -22,8 +22,11 @@ YTDLOption = {
 }
 
 
-def _extract(query: str) -> dict:
+def _extract(query: str, video: bool = False) -> dict:
     option = copy.copy(YTDLOption)
+
+    if video:
+        option["format"] = "(best)[protocol!=http_dash_segments]"
 
     YoutubePlaylistMatch = YOUTUBE_PLAYLIST_ID_REGEX.match(query)
     if YoutubePlaylistMatch and not YoutubePlaylistMatch.group(1).startswith(
@@ -52,6 +55,9 @@ def _extract(query: str) -> dict:
 
         return Data["entries"]
 
+    if not Data:
+        raise NoSearchResults
+
     return Data
 
 
@@ -62,11 +68,13 @@ def _clear_cache() -> None:
     YoutubeDL.cache.remove()
 
 
-async def extract(query: str, loop: asyncio.AbstractEventLoop = None) -> dict:
+async def extract(
+    query: str, video: bool = False, loop: asyncio.AbstractEventLoop = None
+) -> dict:
     if not loop:
         loop = asyncio.get_event_loop()
 
-    return await loop.run_in_executor(None, _extract, query)
+    return await loop.run_in_executor(None, _extract, query, video)
 
 
 async def clear_cache(loop: asyncio.AbstractEventLoop = None) -> None:
