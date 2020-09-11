@@ -1,11 +1,11 @@
 import asyncio
+import io
 import queue
+import threading
 import time
 import traceback
-import av
-import io
-import threading
 
+import av
 import discord
 
 from .PyAVSource import PyAVSource

@@ -1,13 +1,13 @@
 from .AudioFifo import AudioFifo
 from .exceptions import *
 from .extractor import *
+from .FadedVolumeTransfer import FadedVolumeTransfer
+from .GaplessPlayer import GaplessPlayer
 from .PyAVSource import PyAVSource
 from .utils import *
-from .YTDLSource import YTDLSource
-from .GaplessPlayer import GaplessPlayer
-from .YTDLVideoSource import YTDLVideoSource
 from .VideoSource import VideoSource
-
+from .YTDLSource import YTDLSource
+from .YTDLVideoSource import YTDLVideoSource
 
 # def __patch_opus():
 #     import discord.opus
