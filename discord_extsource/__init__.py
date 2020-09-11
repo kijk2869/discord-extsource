@@ -1,4 +1,5 @@
 from .AudioFifo import AudioFifo
+from .CrossfadePlayer import CrossfadePlayer
 from .exceptions import *
 from .extractor import *
 from .FadedVolumeTransfer import FadedVolumeTransfer
