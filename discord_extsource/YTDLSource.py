@@ -22,6 +22,9 @@ class YTDLSource(PyAVSource):
         if isinstance(Data, list):
             Data = Data[0]
 
+        if not "url" in Data:
+            return await cls.create(Data["id"], *args, **kwargs)
+
         return cls(Data, *args, **kwargs)
 
     def seek(self, offset: float, *args, **kwargs) -> None:

@@ -25,4 +25,7 @@ class YTDLVideoSource(VideoSource):
         if isinstance(Data, list):
             Data = Data[0]
 
+        if not "url" in Data:
+            return await cls.create(Data["id"], channel, *args, **kwargs)
+
         return cls(Data, channel, *args, **kwargs)
