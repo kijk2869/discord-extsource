@@ -45,7 +45,7 @@ class VideoSource(PyAVSource):
             except:
                 pass
 
-        delay = 1 - (time.perf_counter() - Count)
+        delay = 2 - (time.perf_counter() - Count)
         await asyncio.sleep(delay)
 
     def read(self) -> bytes:
