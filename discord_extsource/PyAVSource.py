@@ -32,13 +32,12 @@ class PyAVSource(discord.AudioSource):
         self._waitforread = threading.Lock()
         self._loading = threading.Lock()
         self._seeking = threading.Lock()
+        self.BufferLoader = None
 
         self.AudioFifo = AudioFifo()
         self.duration = None
         self.position = 0.0
         self._volume = 1.0
-
-        self.start()
 
     def __del__(self):
         self.cleanup()
@@ -52,6 +51,9 @@ class PyAVSource(discord.AudioSource):
         self._volume = max(value, 0.0)
 
     def read(self) -> bytes:
+        if not self.BufferLoader:
+            self.start()
+
         if not self.AudioFifo:
             return
 
