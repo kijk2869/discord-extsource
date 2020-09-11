@@ -3,6 +3,8 @@ import queue
 
 import discord
 
+from .PyAVSource import PyAVSource
+
 
 class CrossfadePlayer(discord.AudioSource):
     def __init__(self, *args) -> None:
@@ -99,3 +101,7 @@ class CrossfadePlayer(discord.AudioSource):
     @volume.setter
     def volume(self, value: float) -> None:
         self._volume = max(value, 0.0)
+
+    @property
+    def current(self) -> PyAVSource:
+        return self._playing
