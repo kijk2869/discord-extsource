@@ -1,3 +1,4 @@
+from typing import Any
 import discord
 
 from .PyAVSource import PyAVSource
@@ -18,6 +19,9 @@ class FadedVolumeTransfer(discord.AudioSource):
     @volume.setter
     def volume(self, value: float) -> None:
         self._volume = value
+
+    def __getattr__(self, key: str) -> Any:
+        return getattr(self.original, key)
 
     def cleanup(self) -> None:
         return self.original.cleanup()
