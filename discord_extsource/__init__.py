@@ -10,6 +10,7 @@ from .utils import *
 from .VideoSource import VideoSource
 from .YTDLSource import YTDLSource
 from .YTDLVideoSource import YTDLVideoSource
+from .AudioFilter import AudioFilter
 
 # def __patch_opus():
 #     import discord.opus

@@ -1,5 +1,6 @@
 import asyncio
 import audioop
+from .AudioFilter import AudioFilter
 import functools
 import threading
 import traceback
@@ -38,6 +39,7 @@ class PyAVSource(discord.AudioSource):
         self.duration = None
         self._position = 0.0
         self._volume = 1.0
+        self.filter = {}
 
     def __del__(self):
         self.cleanup()
@@ -134,6 +136,8 @@ class Loader(threading.Thread):
         self.Source = AudioSource
 
         self.Resampler = None
+        self.Filter = {}
+        self.FilterGraph = None
 
     def _do_run(self) -> None:
         with withLock(self.Source._loading):
@@ -149,6 +153,18 @@ class Loader(threading.Thread):
             )
 
             while not self.Source._end.is_set():
+                if self.Source.filter != self.Filter:
+                    self.Filter = self.Source.filter
+
+                    if self.Source.filter:
+                        self.FilterGraph = AudioFilter()
+                        self.FilterGraph.selectAudioStream = (
+                            self.Source.selectAudioStream
+                        )
+                        self.FilterGraph.setFilters(self.Filter)
+                    else:
+                        self.FilterGraph = None
+
                 if not self.Resampler or self.Source._haveToReloadResampler.is_set():
                     self.Resampler = av.AudioResampler(
                         format=av.AudioFormat("s16").packed, layout="stereo", rate=48000
@@ -171,6 +187,13 @@ class Loader(threading.Thread):
                     break
 
                 _current_position = float(Frame.pts * Frame.time_base)
+
+                if self.FilterGraph:
+                    self.FilterGraph.push(Frame)
+                    Frame = self.FilterGraph.pull()
+
+                    if not Frame:
+                        continue
 
                 Frame.pts = None
                 try:
