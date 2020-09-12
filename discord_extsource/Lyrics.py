@@ -74,7 +74,7 @@ class smi(LyricsFormat):
                     )
 
                 self._TextElements.append({"start": Start, "text": Element})
-            else:
+            elif self._TextElements:
                 self._TextElements[-1]["text"] += "\n" + Text
 
         self.TextElements = {

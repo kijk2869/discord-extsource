@@ -4,7 +4,7 @@ from .exceptions import *
 from .extractor import *
 from .FadedVolumeTransfer import FadedVolumeTransfer
 from .GaplessPlayer import GaplessPlayer
-from .Lyrics import Lyrics
+from .Lyrics import *
 from .PyAVSource import PyAVSource
 from .utils import *
 from .VideoSource import VideoSource
