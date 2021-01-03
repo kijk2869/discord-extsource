@@ -11,6 +11,8 @@ from .VideoSource import VideoSource
 from .YTDLSource import YTDLSource
 from .YTDLVideoSource import YTDLVideoSource
 from .AudioFilter import AudioFilter
+from .mixer import Mixer
+from .AudioVisualizerTransfer import AudioVisualizerTransfer
 
 # def __patch_opus():
 #     import discord.opus
